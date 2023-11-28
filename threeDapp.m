@@ -5,7 +5,10 @@ app.Position(4) = 900;
 app.Color = '#FFFFFF';
 global p t
 global MAX_X MAX_Y MAX_Z
-global xRotPi yRotPi zRotPi 
+global xRotPi yRotPi zRotPi
+global xTranslation yTranslation zTranslation
+global xScale yScale zScale
+
 
 % Declare constants for UI elements
 Padding = 10;
@@ -14,7 +17,8 @@ Field_Width = 130;
 Spacer = Field_Height + Padding
 TopLeftY = app.Position(4) - Spacer;
 Mini_Field_Width = 40;
-XComponent = 10
+HeaderX = 10
+XComponent = 30
 CamLabelMainPos = 10 
 CamLabelMainWidth = 50
 CamXLabelPos = 10;
@@ -66,67 +70,151 @@ Axes_3D.CameraTarget = [0,0,0]
 
 %Object build animation Button
 buildAnimationButton = uibutton(app);
-buildAnimationButton.Position = [10 TopLeftY Field_Width Field_Height];
+buildAnimationButton.Position = [HeaderX TopLeftY Field_Width Field_Height];
 buildAnimationButton.Text = '▶︎ obj build animation';
 
 
 %Camera/Perspective mode Dropdown%
 perspDd = uidropdown(app,"Items",["orthographic","perspective"]);
-perspDd.Position = [XComponent (TopLeftY-(Spacer)) Field_Width Field_Height];
+perspDd.Position = [HeaderX (TopLeftY-(Spacer)) Field_Width Field_Height];
 perspDd_Label = uilabel(app);
 perspDd_Label.Text = 'Perspective Mode';
 perspDd_Label.Position = [XLabel (TopLeftY-(Spacer)) Field_Width Field_Height];
 
 %Line style Dropdown%
-LineDd = uidropdown(app,"Items",["-","none"]);
-LineDd.Position = [XComponent (TopLeftY-(2*Spacer)) Field_Width Field_Height];
+LineDd = uidropdown(app,"Items",["none","-"]);
+LineDd.Position = [HeaderX (TopLeftY-(2*Spacer)) Field_Width Field_Height];
 LineDd_Label = uilabel(app);
 LineDd_Label.Text = 'Line Style';
 LineDd_Label.Position = [XLabel (TopLeftY-(2*Spacer)) Field_Width Field_Height];
 
 %Rotation Transforms
-RotationUpperBounds = 1000;
+SliderSamples = 1000;
 xRotPi = 0;
 yRotPi = 0;
 zRotPi = 0;
+xTranslation = 0;
+yTranslation = 0;
+zTranslation = 0;
+xScale = 1;
+yScale = 1;
+zScale = 1;
+
+TransformsLable = uilabel(app);
+TransformsLable.Text = 'Transformations:';
+TransformsLable.Position = [HeaderX (TopLeftY-(4*Spacer)) Field_Width Field_Height];
+TransformsSpacerStart = TopLeftY-(4*Spacer) - Spacer
+TransformsSpacer = Spacer + Field_Height
 
 % x rotation slider
 xRotSlider = uislider(app);
-xRotSlider.Position = [XComponent (TopLeftY-(3*Spacer)) Field_Width Field_Height];
-xRotSlider.Limits = [0 RotationUpperBounds];
+xRotSlider.Position = [XComponent (TransformsSpacerStart) Field_Width Field_Height];
+xRotSlider.Limits = [0 SliderSamples];
 xRotSlider.Value = 0;
-xRotSlider.MajorTicks = [0 1/2 1 3/2 2] * RotationUpperBounds;
-xRotSlider.MajorTickLabels = (xRotSlider.MajorTicks/RotationUpperBounds)*2 + "π";
-xRotSlider.MinorTicks = [1/4 3/4 5/4 7/4] * RotationUpperBounds;
+xRotSlider.MajorTicks = [0 1/2 1 3/2 2] * SliderSamples;
+xRotSlider.MajorTickLabels = (xRotSlider.MajorTicks/SliderSamples)*2 + "π";
+xRotSlider.MinorTicks = [1/4 3/4 5/4 7/4] * SliderSamples;
 xRotSlider_Label = uilabel(app);
 xRotSlider_Label.Text = 'x Axis Rotation';
-xRotSlider_Label.Position = [XLabel (TopLeftY-(3*Spacer)) Field_Width Field_Height];
+xRotSlider_Label.Position = [XLabel (TransformsSpacerStart) Field_Width Field_Height];
 % y rotation slider
 yRotSlider = uislider(app);
-yRotSlider.Position = [XComponent (TopLeftY-(4*Spacer)-20) Field_Width Field_Height];
-yRotSlider.Limits = [0 RotationUpperBounds];
+yRotSlider.Position = [XComponent (TransformsSpacerStart-TransformsSpacer) Field_Width Field_Height];
+yRotSlider.Limits = [0 SliderSamples];
 yRotSlider.Value = 0;
-yRotSlider.MajorTicks = [0 1/2 1 3/2 2] * RotationUpperBounds;
-yRotSlider.MajorTickLabels = (yRotSlider.MajorTicks/RotationUpperBounds)*2 + "π";
-yRotSlider.MinorTicks = [1/4 3/4 5/4 7/4] * RotationUpperBounds;
+yRotSlider.MajorTicks = [0 1/2 1 3/2 2] * SliderSamples;
+yRotSlider.MajorTickLabels = (yRotSlider.MajorTicks/SliderSamples)*2 + "π";
+yRotSlider.MinorTicks = [1/4 3/4 5/4 7/4] * SliderSamples;
 yRotSlider_Label = uilabel(app);
 yRotSlider_Label.Text = 'y Axis Rotation';
-yRotSlider_Label.Position = [XLabel (TopLeftY-(4*Spacer)-20) Field_Width Field_Height];
-
+yRotSlider_Label.Position = [XLabel (TransformsSpacerStart-TransformsSpacer) Field_Width Field_Height];
 % z rotation slider
 zRotSlider = uislider(app);
-zRotSlider.Position = [XComponent (TopLeftY-(5*Spacer)-40) Field_Width Field_Height];
-zRotSlider.Limits = [0 RotationUpperBounds];
+zRotSlider.Position = [XComponent (TransformsSpacerStart-2*TransformsSpacer) Field_Width Field_Height];
+zRotSlider.Limits = [0 SliderSamples];
 zRotSlider.Value = 0;
-zRotSlider.MajorTicks = [0 1/2 1 3/2 2] * RotationUpperBounds;
-zRotSlider.MajorTickLabels = (zRotSlider.MajorTicks/RotationUpperBounds)*2 + "π";
-zRotSlider.MinorTicks = [1/4 3/4 5/4 7/4] * RotationUpperBounds;
+zRotSlider.MajorTicks = [0 1/2 1 3/2 2] * SliderSamples;
+zRotSlider.MajorTickLabels = (zRotSlider.MajorTicks/SliderSamples)*2 + "π";
+zRotSlider.MinorTicks = [1/4 3/4 5/4 7/4] * SliderSamples;
 zRotSlider_Label = uilabel(app);
 zRotSlider_Label.Text = 'z Axis Rotation';
-zRotSlider_Label.Position = [XLabel (TopLeftY-(5*Spacer)-40) Field_Width Field_Height];
+zRotSlider_Label.Position = [XLabel (TransformsSpacerStart-2*TransformsSpacer) Field_Width Field_Height];
+
+%Translation Transforms
+translationSamples = 1000;
+translationBounds = 3;
+
+% x translation slider
+xTranslSlider = uislider(app);
+xTranslSlider.Position = [XComponent (TransformsSpacerStart-3*TransformsSpacer) Field_Width Field_Height];
+xTranslSlider.Limits = [-3 3];
+xTranslSlider.Value = 0;
+xTranslSlider_Label = uilabel(app);
+xTranslSlider_Label.Position = [XLabel (TransformsSpacerStart-3*TransformsSpacer) Field_Width Field_Height];
+xTranslSlider_Label.Text = 'x Axis Translation';
+% y translation slider
+yTranslSlider = uislider(app);
+yTranslSlider.Position = [XComponent (TransformsSpacerStart-4*TransformsSpacer) Field_Width Field_Height];
+yTranslSlider.Limits = [-3 3];
+yTranslSlider.Value = 0;
+yTranslSlider_Label = uilabel(app);
+yTranslSlider_Label.Position = [XLabel (TransformsSpacerStart-4*TransformsSpacer) Field_Width Field_Height];
+yTranslSlider_Label.Text = 'y Axis Translation';
+% z translation slider
+zTranslSlider = uislider(app);
+zTranslSlider.Position = [XComponent (TransformsSpacerStart-5*TransformsSpacer) Field_Width Field_Height];
+zTranslSlider.Limits = [-3 3];
+zTranslSlider.Value = 0;
+zTranslSlider_Label = uilabel(app);
+zTranslSlider_Label.Position = [XLabel (TransformsSpacerStart-5*TransformsSpacer) Field_Width Field_Height];
+zTranslSlider_Label.Text = 'z Axis Translation';
+
+% x scale slider
+xScaleSlider = uislider(app);
+xScaleSlider.Position = [XComponent (TransformsSpacerStart-6*TransformsSpacer) Field_Width Field_Height];
+xScaleSlider.Limits = [0.001 2];
+xScaleSlider.Value = 1;
+xScaleSlider_Label = uilabel(app);
+xScaleSlider_Label.Position = [XLabel (TransformsSpacerStart-6*TransformsSpacer) Field_Width Field_Height];
+xScaleSlider_Label.Text = 'x Axis Scale';
+% y scale slider
+yScaleSlider = uislider(app);
+yScaleSlider.Position = [XComponent (TransformsSpacerStart-7*TransformsSpacer) Field_Width Field_Height];
+yScaleSlider.Limits = [0.001 2];
+yScaleSlider.Value = 1;
+yScaleSlider_Label = uilabel(app);
+yScaleSlider_Label.Position = [XLabel (TransformsSpacerStart-7*TransformsSpacer) Field_Width Field_Height];
+yScaleSlider_Label.Text = 'y Axis Scale';
+% z scale slider
+zScaleSlider = uislider(app);
+zScaleSlider.Position = [XComponent (TransformsSpacerStart-8*TransformsSpacer) Field_Width Field_Height];
+zScaleSlider.Limits = [0.001 2];
+zScaleSlider.Value = 1;
+zScaleSlider_Label = uilabel(app);
+zScaleSlider_Label.Position = [XLabel (TransformsSpacerStart-8*TransformsSpacer) Field_Width Field_Height];
+zScaleSlider_Label.Text = 'z Axis Scale';
+
+MaterialsLable = uilabel(app);
+MaterialsLable.Text = 'Materials/Color:';
+MaterialsLable.Position = [HeaderX (TransformsSpacerStart-9*TransformsSpacer-Spacer) Field_Width Field_Height];
+MaterialSpacerStart = (TransformsSpacerStart-9*TransformsSpacer-2*Spacer)
 
 
-%Camera Position input Label
+
+% Material Dropdown
+MaterialDd = uidropdown(app,"Items",["shiny","metal","dull"]);
+MaterialDd.Position = [XComponent MaterialSpacerStart Field_Width Field_Height];
+MaterialDd_Label = uilabel(app);
+MaterialDd_Label.Text = 'Material';
+MaterialDd_Label.Position = [XLabel MaterialSpacerStart Field_Width Field_Height];
+% Face Color Dropdown
+ColorMapDd = uidropdown(app,"Items",["parula",'turbo','hsv','hot','cool','spring','summer','autumn','winter','gray','bone','copper','pink','sky','abyss','jet','lines','colorcube','prism','flag']);
+ColorMapDd.Position = [XComponent (MaterialSpacerStart-Spacer) Field_Width Field_Height];
+ColorMapDd_Label = uilabel(app);
+ColorMapDd_Label.Text = 'Colormap';
+ColorMapDd_Label.Position = [XLabel (MaterialSpacerStart-Spacer) Field_Width Field_Height];
+
+%Camera Position  Label
 cam_label_main = uilabel(app);
 cam_label_main.Text = 'Camera Position';
 cam_label_main.Position = [XLabel+10 CamYInputPos Field_Width Field_Height];
@@ -168,9 +256,9 @@ AC_DIMENSION = max(max(sqrt(sum(verts.^2,2))));
 MAX_X = max(max(sqrt(sum(verts(1, :).^2,2))));
 MAX_Y = max(max(sqrt(sum(verts(2, :).^2,2))));  
 MAX_Z = max(max(sqrt(sum(verts(3, :).^2,2))));
-% AC_DIMENSION = max(MAX_X, MAX_Y, (MAX_Z/2))
 
-p = patch(Axes_3D, 'Faces',faces,'Vertices',verts,'FaceVertexCData',cindex,'FaceColor','flat');
+% AC_DIMENSION = max(MAX_X, MAX_Y, (MAX_Z/2))
+p = patch(Axes_3D, 'Faces',faces,'Vertices',verts,'FaceVertexCData',cindex,'FaceColor','flat','LineStyle','none');
 t = hgtransform('Parent', Axes_3D);
 set(p,'Parent',t)
 applyTransforms();
@@ -179,12 +267,15 @@ applyTransforms();
 % set(t,'Matrix',CenterTranslation);
 % drawnow;
 
-colormap(Axes_3D, 'autumn');
+% colormap(Axes_3D, 'autumn');
 % colormap(Axes_3D, 'winter');
-material(Axes_3D, 'metal');
-l1 = light(Axes_3D, 'Position',[5 0 2],'Style','infinite')
-l2 = light(Axes_3D, 'Position',[0 0 -3],'Style','infinite')
-l3 = light(Axes_3D, 'Position',[-5 0 3],'Style','infinite')
+material(Axes_3D, 'shiny');
+l1 = light(Axes_3D, 'Position',[5 0 2],'Style','infinite','Color','white')
+l2 = light(Axes_3D, 'Position',[0 0 -3],'Style','infinite','Color','white')
+l3 = light(Axes_3D, 'Position',[-5 0 3],'Style','infinite','Color','white')
+% l1 = light(Axes_3D, 'Position',[5 0 2],'Style','infinite','Color','r')
+% l2 = light(Axes_3D, 'Position',[0 0 -3],'Style','infinite','Color','g')
+% l3 = light(Axes_3D, 'Position',[-5 0 3],'Style','infinite','Color','b')
 lighting gouraud
 
 euler_hgt(1)  = hgtransform('Parent', Axes_3D, 'tag', 'OriginAxes');
@@ -198,15 +289,28 @@ Draw_Guide_Lines(Axes_3D, AC_DIMENSION, euler_hgt)
 
 
 %Setting callback functions to update cam positions for each input field%
+buildAnimationButton.ButtonPushedFcn = @(src,event) Obj_Build_Animation(Axes_3D);
+perspDd.ValueChangedFcn = @(perspDd,event) Toggle_Perspective(perspDd, Axes_3D)
+LineDd.ValueChangedFcn = @(LineDd,event) Toggle_Wireframe(LineDd)
+
+xRotSlider.ValueChangingFcn = @(src,event) updateXRot(src,event,t,SliderSamples);
+yRotSlider.ValueChangingFcn = @(src,event) updateYRot(src,event,t,SliderSamples);
+zRotSlider.ValueChangingFcn = @(src,event) updateZRot(src,event,t,SliderSamples);
+
+xTranslSlider.ValueChangingFcn = @(src,event) updateXTrans(src,event,t);
+yTranslSlider.ValueChangingFcn = @(src,event) updateYTrans(src,event,t);
+zTranslSlider.ValueChangingFcn = @(src,event) updateZTrans(src,event,t);
+
+xScaleSlider.ValueChangingFcn = @(src,event) updateXScale(src,event,t);
+yScaleSlider.ValueChangingFcn = @(src,event) updateYScale(src,event,t);
+zScaleSlider.ValueChangingFcn = @(src,event) updateZScale(src,event,t);
+
+MaterialDd.ValueChangedFcn = @(src,event) updateMaterial(Axes_3D, MaterialDd)
+ColorMapDd.ValueChangedFcn = @(src,event) updateColormap(Axes_3D, ColorMapDd)
+
 x1.ValueChangedFcn = @(x1,event) Set_Cam_XPos(x1, Axes_3D)
 y1.ValueChangedFcn = @(y1,event) Set_Cam_YPos(y1, Axes_3D)
 z1.ValueChangedFcn = @(z1,event) Set_Cam_ZPos(z1, Axes_3D)
-perspDd.ValueChangedFcn = @(perspDd,event) Toggle_Perspective(perspDd, Axes_3D)
-LineDd.ValueChangedFcn = @(LineDd,event) Toggle_Wireframe(LineDd)
-buildAnimationButton.ButtonPushedFcn = @(src,event) Obj_Build_Animation(Axes_3D);
-xRotSlider.ValueChangingFcn = @(src,event) updateXRot(src,event,t,RotationUpperBounds);
-yRotSlider.ValueChangingFcn = @(src,event) updateYRot(src,event,t,RotationUpperBounds);
-zRotSlider.ValueChangingFcn = @(src,event) updateZRot(src,event,t,RotationUpperBounds);
 
 % Allow object to be rotated
 h = rotate3d(Axes_3D);
@@ -216,13 +320,21 @@ h.ActionPostCallback = @(src,event) Set_Cam_Pos(x1, y1, z1, Axes_3D);
 
 %Y-axis rotate transform
 function [] = applyTransforms();
-global t xRotPi yRotPi zRotPi MAX_Z;
-Rxyz = makehgtform('xrotate', xRotPi,'yrotate', yRotPi,'zrotate', zRotPi, 'translate',[0 0 -(MAX_Z/2)]);
+global t MAX_Z;
+global xRotPi yRotPi zRotPi;
+global xTranslation yTranslation zTranslation
+global xScale yScale zScale
+Rxyz = makehgtform( ...
+    'xrotate', xRotPi, ...
+    'yrotate', yRotPi, ...
+    'zrotate', zRotPi, ...
+    'translate',[xTranslation yTranslation zTranslation-(MAX_Z/2)], ...
+    'scale', [xScale, yScale, zScale]);
 set(t,'Matrix',Rxyz);
 drawnow;
 end
 
-%Y-axis rotate transform
+%X-axis rotate transform
 function [] = updateXRot(src,event,t,RotationUpperBounds);
 global xRotPi
 xRotPi = (event.Value/RotationUpperBounds) * 2 * pi
@@ -246,6 +358,56 @@ zRotPi = (event.Value/RotationUpperBounds) * 2 * pi
 applyTransforms();
 end
 
+%X-axis Translate transform
+function [] = updateXTrans(src,event,t);
+global xTranslation
+xTranslation = event.Value
+%applyTransforms(t);
+applyTransforms();
+end
+
+%Y-axis Translate transform
+function [] = updateYTrans(src,event,t);
+global yTranslation
+yTranslation = event.Value
+%applyTransforms(t);
+applyTransforms();
+end
+
+%Z-axis Translate transform
+function [] = updateZTrans(src,event,t);
+global zTranslation
+zTranslation = event.Value
+%applyTransforms(t);
+applyTransforms();
+end
+
+%X-axis Scale transform
+function [] = updateXScale(src,event,t);
+global xScale
+xScale = event.Value
+%applyTransforms(t);
+applyTransforms();
+end
+
+%Y-axis Scale transform
+function [] = updateYScale(src,event,t);
+global yScale
+yScale = event.Value
+%applyTransforms(t);
+applyTransforms();
+end
+
+%Z-axis Scale transform
+function [] = updateZScale(src,event,t);
+global zScale
+zScale = event.Value
+%applyTransforms(t);
+applyTransforms();
+end
+
+
+
 %Set Cam X,Y,Z Positions
 function [] = Set_Cam_Pos(x1, y1, z1, Axes_3D)
 x1.Value = Axes_3D.CameraPosition(1);
@@ -258,13 +420,14 @@ function [] = Obj_Build_Animation(Axes_3D)
 global p t
 [verts, faces, cindex] = teapotGeometry;
 linestyle = p.LineStyle;
+facecol = p.FaceColor;
 animationSpeed = 20;
 hold(Axes_3D, "off")
 for k=1:(length(faces)/animationSpeed)
     % update the data
     % cla(Axes_3D);
     p.reset()
-    p = patch(Axes_3D, 'Faces',faces(1:animationSpeed*k, :),'Vertices',verts,'FaceVertexCData',cindex,'FaceColor','interp','LineStyle', linestyle);
+    p = patch(Axes_3D, 'Faces',faces(1:animationSpeed*k, :),'Vertices',verts,'FaceVertexCData',cindex,'FaceColor',facecol,'LineStyle', linestyle);
     t = hgtransform('Parent', Axes_3D);
     set(p,'Parent',t)
     applyTransforms();
@@ -274,7 +437,7 @@ for k=1:(length(faces)/animationSpeed)
     pause(0.0000000001);
 end
 p.reset()
-p = patch(Axes_3D, 'Faces',faces,'Vertices',verts,'FaceVertexCData',cindex,'FaceColor','interp','LineStyle', linestyle);
+p = patch(Axes_3D, 'Faces',faces,'Vertices',verts,'FaceVertexCData',cindex,'FaceColor',facecol,'LineStyle', linestyle);
 t = hgtransform('Parent', Axes_3D);
 set(p,'Parent',t)
 applyTransforms();
@@ -311,10 +474,22 @@ global p
 p.LineStyle = LineDd.Value;
 end
 
+function [] = updateFacecolor(FaceColDd)
+global p
+p.FaceColor = FaceColDd.Value
+end
+
+function [] = updateMaterial(Axes_3D, MaterialDd)
+material(Axes_3D, MaterialDd.Value)
+end
+
+function [] = updateColormap(Axes_3D, ColorMapDd)
+colormap(Axes_3D, ColorMapDd.Value)
+end
 
 function [] = Draw_Guide_Lines(Axes_3D, AC_DIMENSION, euler_hgt)
 %% Plot Euler angles references
-global t
+
 %Attribution: https://medium.com/geekculture/3d-animations-made-simple-with-matlab-visualizing-flight-test-data-and-simulation-results-ed399cdcc711
 R = AC_DIMENSION;
 % Plot outer circles
@@ -328,17 +503,17 @@ xPlaneCircle = plot3(Axes_3D, R * D1(:,3), R * D1(:,1), R * D1(:,2), 'Color', 'r
 S = 0.95;
 phi = -pi+pi/2:pi/2:pi;
 D1 = [sin(phi); cos(phi); zeros(size(phi))];
-zPlaneMajorMarks = plot3(Axes_3D, [S * R * D1(1, :); R * D1(1, :)],[S * R * D1(2, :); R * D1(2, :)],[S * R * D1(3, :); R * D1(3, :)], 'Color', 'b', 'tag', 'Zplane', 'Parent',euler_hgt(4));
-yPlaneMajorMarks = plot3(Axes_3D, [S * R * D1(2, :); R * D1(2, :)],[S * R * D1(3, :); R * D1(3, :)],[S * R * D1(1, :); R * D1(1, :)], 'Color',[0 0.8 0], 'tag', 'Yplane', 'Parent',euler_hgt(3));
-xPlaneMajorMarks = plot3(Axes_3D, [S * R * D1(3, :); R * D1(3, :)],[S * R * D1(1, :); R * D1(1, :)],[S * R * D1(2, :); R * D1(2, :)], 'Color', 'r', 'tag', 'Xplane', 'Parent',euler_hgt(2));
-text(R * 1.05 * D1(1, :), R * 1.05 * D1(2, :), R * 1.05 * D1(3, :), {'N', 'E', 'S', 'W'}, 'Fontsize',9, 'color', [0 0 0], 'HorizontalAlign', 'center', 'VerticalAlign', 'middle');
-
+plot3(Axes_3D, [S * R * D1(1, :); R * D1(1, :)],[S * R * D1(2, :); R * D1(2, :)],[S * R * D1(3, :); R * D1(3, :)], 'Color', 'b', 'tag', 'Zplane', 'Parent',euler_hgt(4));
+plot3(Axes_3D, [S * R * D1(2, :); R * D1(2, :)],[S * R * D1(3, :); R * D1(3, :)],[S * R * D1(1, :); R * D1(1, :)], 'Color',[0 0.8 0], 'tag', 'Yplane', 'Parent',euler_hgt(3));
+plot3(Axes_3D, [S * R * D1(3, :); R * D1(3, :)],[S * R * D1(1, :); R * D1(1, :)],[S * R * D1(2, :); R * D1(2, :)], 'Color', 'r', 'tag', 'Xplane', 'Parent',euler_hgt(2));
+text(Axes_3D, R * 1.05 * D1(1, :), R * 1.05 * D1(2, :), R * 1.05 * D1(3, :), {'-x', '+y', '+x', '-y'}, 'Fontsize',9, 'color', [0 0 0], 'HorizontalAlign', 'center', 'VerticalAlign', 'middle');
+text(Axes_3D, R * 1.05 * D1(3, :), R * 1.05 * D1(3, :), R * 1.05 * D1(1, :), {'-z', '', '+z', ''}, 'Fontsize',9, 'color', [0 0 0], 'HorizontalAlign', 'center', 'VerticalAlign', 'middle');
 % Plot +45,+135,+180,+225,+315 Marks
 S = 0.95;
 phi = -pi+pi/4:2*pi/4:pi;
 D1 = [sin(phi); cos(phi); zeros(size(phi))];
 zPlaneMinorMarks = plot3(Axes_3D, [S*R * D1(1, :); R * D1(1, :)],[S*R * D1(2, :); R * D1(2, :)],[S*R * D1(3, :); R * D1(3, :)], 'Color', 'b', 'tag', 'Zplane', 'Parent',euler_hgt(4));
-text(R * 1.05 * D1(1, :), R * 1.05 * D1(2, :), R * 1.05 * D1(3, :), {'NW', 'NE', 'SE', 'SW'}, 'Fontsize',8, 'color',[0 0 0], 'HorizontalAlign', 'center', 'VerticalAlign', 'middle');
+
 
 % 10 deg sub-division marks
 S = 0.98;
@@ -349,27 +524,9 @@ zPlane10DegMarks = plot3(Axes_3D, [S * R * D1(1, :); R * D1(1, :)],[S * R * D1(2
 yPlane10DegMarks = plot3(Axes_3D, [S * R * D1(2, :); R * D1(2, :)],[S * R * D1(3, :); R * D1(3, :)],[S * R * D1(1, :); R * D1(1, :)], 'Color', [0 0.8 0], 'tag', 'Yplane', 'Parent', euler_hgt(3));
 xPlane10DegMarks = plot3(Axes_3D, [S * R * D1(3, :); R * D1(3, :)],[S * R * D1(1, :); R * D1(1, :)],[S * R * D1(2, :); R * D1(2, :)], 'Color', 'r', 'tag', 'Xplane', 'Parent', euler_hgt(2));
 % Guide lines
-% headingGuideLine = plot3(Axes_3D, [-R, R], [ 0, 0], [0, 0], 'b-', 'tag', 'heading_line', 'parent', euler_hgt(7));
-% pitchGuideLine = plot3(Axes_3D, [-R, R], [ 0, 0], [0 ,0], 'g-', 'tag',   'pitch_line', 'parent', euler_hgt(6), 'color',[0 0.8 0]);
-% rollGuideLine = plot3(Axes_3D, [ 0, 0], [-R, R], [0, 0], 'r-', 'tag',    'roll_line', 'parent', euler_hgt(5));
-
-
-
-
-% Initialize text handles
-% FontSize    = 13;
-% text_color  = [1, 0, 1];
-% font_name   = 'Consolas';
-% hdle_text_t                 = text(Axes_3D, 0.45 * AC_DIMENSION * 1.5, 0.55 * AC_DIMENSION * 1.5, 't=  0 sec', 'Color',text_color, 'FontSize',FontSize, 'FontName', font_name);
-% hdle_text_valtitude         = text(Axes_3D, 0.45 * AC_DIMENSION * 1.5, 0.55 * AC_DIMENSION * 1.5, 0.63 * AC_DIMENSION * 1.5, '', 'Color',text_color, 'FontSize', FontSize, 'FontName', font_name);
-% hdle_text_psi_deg           = text(Axes_3D, 0.45 * AC_DIMENSION * 1.5, 0.55 * AC_DIMENSION * 1.5, 0.50 * AC_DIMENSION * 1.5, '', 'Color',text_color, 'FontSize', FontSize, 'FontName', font_name);
-% hdle_text_th                = text(Axes_3D, 0.45 * AC_DIMENSION * 1.5, 0.55 * AC_DIMENSION * 1.5, 0.47 * AC_DIMENSION * 1.5, '', 'Color',text_color, 'FontSize', FontSize, 'FontName', font_name);
-% hdle_text_phi               = text(Axes_3D, 0.45 * AC_DIMENSION * 1.5, 0.55 * AC_DIMENSION * 1.5, 0.43 * AC_DIMENSION * 1.5, '', 'Color',text_color, 'FontSize', FontSize, 'FontName', font_name);
-% hdle_text_angle_of_attack   = text(Axes_3D, 0.45 * AC_DIMENSION * 1.5, 0.55 * AC_DIMENSION * 1.5, 0.37 * AC_DIMENSION * 1.5, '', 'Color',text_color, 'FontSize', FontSize, 'FontName', font_name);
-% hdle_text_angle_of_sideslip = text(Axes_3D, 0.45 * AC_DIMENSION * 1.5, 0.55 * AC_DIMENSION * 1.5, 0.34 * AC_DIMENSION * 1.5, '', 'Color',text_color, 'FontSize', FontSize, 'FontName', font_name);
-% hdle_text_gam               = text(Axes_3D, 0.45 * AC_DIMENSION * 1.5, 0.55 * AC_DIMENSION * 1.5, 0.31 * AC_DIMENSION * 1.5, '', 'Color',text_color, 'FontSize', FontSize, 'FontName', font_name);
-% hdle_text_nz                = text(Axes_3D, 0.45 * AC_DIMENSION * 1.5, 0.55 * AC_DIMENSION * 1.5, 0.56 * AC_DIMENSION * 1.5, '', 'Color',text_color, 'FontSize', FontSize, 'FontName', font_name);
-
+pitchGuideLine = plot3(Axes_3D, [-R, R], [ 0, 0], [0 ,0], 'g-', 'tag',   'pitch_line', 'parent', euler_hgt(6), 'color',[0 0.8 0]);
+headingGuideLine = plot3(Axes_3D,  [ 0, 0], [-R, R], [0, 0], 'b-', 'tag', 'heading_line', 'parent', euler_hgt(7));
+rollGuideLine = plot3(Axes_3D, [ 0, 0], [0, 0], [-R, R], 'r-', 'tag',    'roll_line', 'parent', euler_hgt(5));
 
 end
 
@@ -410,7 +567,7 @@ Z_Circle = zeros(1,Number_Of_Data_Points);
 [verts, faces, cindex] = teapotGeometry;
 faces2 = faces(1:1, :);
 
-p = patch(Axes_3D, 'Faces',faces2,'Vertices',verts,'FaceVertexCData',cindex,'FaceColor','interp')
+p = patch(Axes_3D, 'Faces',faces2,'Vertices',verts,'FaceVertexCData',cindex,'FaceColor','flat')
  % for k=1:length(faces)
  %    % update the data
  %    patch(Axes_3D, 'Faces',faces(k),'Vertices',verts,'FaceVertexCData',cindex,'FaceColor','interp')
