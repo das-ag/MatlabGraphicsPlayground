@@ -172,10 +172,11 @@ MAX_Z = max(max(sqrt(sum(verts(3, :).^2,2))));
 p = patch(Axes_3D, 'Faces',faces,'Vertices',verts,'FaceVertexCData',cindex,'FaceColor','interp');
 t = hgtransform('Parent', Axes_3D);
 set(p,'Parent',t)
+applyTransforms();
 % M = makehgtform('translate',[-(MAX_X/2) -(MAX_Y/2) -(MAX_Z/2)])
-CenterTranslation = makehgtform('translate',[0 0 -(MAX_Z/2)])
-set(t,'Matrix',M);
-drawnow;
+% CenterTranslation = makehgtform('translate',[0 0 -(MAX_Z/2)])
+% set(t,'Matrix',CenterTranslation);
+% drawnow;
 
 % colormap(Axes_3D, 'copper');
 % material(Axes_3D, 'shiny');
@@ -253,20 +254,31 @@ function [] = Obj_Build_Animation(Axes_3D)
 global p t
 [verts, faces, cindex] = teapotGeometry;
 linestyle = p.LineStyle;
-animationSpeed = 10;
+animationSpeed = 20;
+hold(Axes_3D, "off")
 for k=1:(length(faces)/animationSpeed)
     % update the data
-    cla(Axes_3D);
-    patch(Axes_3D, 'Faces',faces(1:animationSpeed*k, :),'Vertices',verts,'FaceVertexCData',cindex,'FaceColor','interp','LineStyle', linestyle);
-    Draw_Guide_Lines(Axes_3D, AC_DIMENSION, euler_hgt)
+    % cla(Axes_3D);
+    p.reset()
+    p = patch(Axes_3D, 'Faces',faces(1:animationSpeed*k, :),'Vertices',verts,'FaceVertexCData',cindex,'FaceColor','interp','LineStyle', linestyle);
+    t = hgtransform('Parent', Axes_3D);
+    set(p,'Parent',t)
+    applyTransforms();
+    % applyTransforms();
     % p2.LineStyle = linestyle;
     % pause for 0.1 seconds
-    pause(0.000000001);
+    pause(0.0000000001);
 end
-cla(Axes_3D);
+p.reset()
 p = patch(Axes_3D, 'Faces',faces,'Vertices',verts,'FaceVertexCData',cindex,'FaceColor','interp','LineStyle', linestyle);
 t = hgtransform('Parent', Axes_3D);
 set(p,'Parent',t)
+applyTransforms();
+% cla(Axes_3D);
+% p = patch(Axes_3D, 'Faces',faces,'Vertices',verts,'FaceVertexCData',cindex,'FaceColor','interp','LineStyle', linestyle);
+% t = hgtransform('Parent', Axes_3D);
+% set(p,'Parent',t)
+% Draw_Guide_Lines(Axes_3D, AC_DIMENSION, euler_hgt)
 end
 
 %Set Cam X Position
@@ -333,9 +345,9 @@ zPlane10DegMarks = plot3(Axes_3D, [S * R * D1(1, :); R * D1(1, :)],[S * R * D1(2
 yPlane10DegMarks = plot3(Axes_3D, [S * R * D1(2, :); R * D1(2, :)],[S * R * D1(3, :); R * D1(3, :)],[S * R * D1(1, :); R * D1(1, :)], 'Color', [0 0.8 0], 'tag', 'Yplane', 'Parent', euler_hgt(3));
 xPlane10DegMarks = plot3(Axes_3D, [S * R * D1(3, :); R * D1(3, :)],[S * R * D1(1, :); R * D1(1, :)],[S * R * D1(2, :); R * D1(2, :)], 'Color', 'r', 'tag', 'Xplane', 'Parent', euler_hgt(2));
 % Guide lines
-headingGuideLine = plot3(Axes_3D, [-R, R], [ 0, 0], [0, 0], 'b-', 'tag', 'heading_line', 'parent', euler_hgt(7));
-pitchGuideLine = plot3(Axes_3D, [-R, R], [ 0, 0], [0 ,0], 'g-', 'tag',   'pitch_line', 'parent', euler_hgt(6), 'color',[0 0.8 0]);
-rollGuideLine = plot3(Axes_3D, [ 0, 0], [-R, R], [0, 0], 'r-', 'tag',    'roll_line', 'parent', euler_hgt(5));
+% headingGuideLine = plot3(Axes_3D, [-R, R], [ 0, 0], [0, 0], 'b-', 'tag', 'heading_line', 'parent', euler_hgt(7));
+% pitchGuideLine = plot3(Axes_3D, [-R, R], [ 0, 0], [0 ,0], 'g-', 'tag',   'pitch_line', 'parent', euler_hgt(6), 'color',[0 0.8 0]);
+% rollGuideLine = plot3(Axes_3D, [ 0, 0], [-R, R], [0, 0], 'r-', 'tag',    'roll_line', 'parent', euler_hgt(5));
 
 
 
