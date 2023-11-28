@@ -237,7 +237,7 @@ z1_Label.Position = [CamXLabelNamePos CamYLabelPos Mini_Field_Width Field_Height
 
 
 
-%Render the geometry
+%% Render the geometry
 [verts, faces, cindex] = teapotGeometry;
 AC_DIMENSION = max(max(sqrt(sum(verts.^2,2))));
 
@@ -255,8 +255,6 @@ applyTransforms();
 % set(t,'Matrix',CenterTranslation);
 % drawnow;
 
-% colormap(Axes_3D, 'autumn');
-% colormap(Axes_3D, 'winter');
 material(Axes_3D, 'shiny');
 l1 = light(Axes_3D, 'Position',[5 0 2],'Style','infinite','Color','white')
 l2 = light(Axes_3D, 'Position',[0 0 -3],'Style','infinite','Color','white')
@@ -306,7 +304,7 @@ h.Enable = 'on';
 % add callback to update Camera Position
 h.ActionPostCallback = @(src,event) Set_Cam_Pos(x1, y1, z1, Axes_3D);
 
-%Y-axis rotate transform
+% Apply all Transforms
 function [] = applyTransforms();
 global t MAX_Z;
 global xRotPi yRotPi zRotPi;
