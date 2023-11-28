@@ -163,11 +163,12 @@ z1_Label.Position = [CamXLabelNamePos CamYLabelPos Mini_Field_Width Field_Height
 
 %Render the geometry
 [verts, faces, cindex] = teapotGeometry;
-AC_DIMENSION = max(max(sqrt(sum(verts.^2,2))));
+%AC_DIMENSION = max(max(sqrt(sum(verts.^2,2))));
 
 MAX_X = max(max(sqrt(sum(verts(1, :).^2,2))));
 MAX_Y = max(max(sqrt(sum(verts(2, :).^2,2))));  
 MAX_Z = max(max(sqrt(sum(verts(3, :).^2,2))));
+AC_DIMENSION = max(MAX_X, MAX_Y, (MAX_Z/2))
 
 p = patch(Axes_3D, 'Faces',faces,'Vertices',verts,'FaceVertexCData',cindex,'FaceColor','interp');
 t = hgtransform('Parent', Axes_3D);
@@ -267,7 +268,7 @@ for k=1:(length(faces)/animationSpeed)
     % applyTransforms();
     % p2.LineStyle = linestyle;
     % pause for 0.1 seconds
-    pause(0.000000001);
+    pause(0.0000000001);
 end
 p.reset()
 p = patch(Axes_3D, 'Faces',faces,'Vertices',verts,'FaceVertexCData',cindex,'FaceColor','interp','LineStyle', linestyle);
