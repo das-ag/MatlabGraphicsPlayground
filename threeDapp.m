@@ -168,8 +168,9 @@ AC_DIMENSION = max(max(sqrt(sum(verts.^2,2))));
 MAX_X = max(max(sqrt(sum(verts(1, :).^2,2))));
 MAX_Y = max(max(sqrt(sum(verts(2, :).^2,2))));  
 MAX_Z = max(max(sqrt(sum(verts(3, :).^2,2))));
+% AC_DIMENSION = max(MAX_X, MAX_Y, (MAX_Z/2))
 
-p = patch(Axes_3D, 'Faces',faces,'Vertices',verts,'FaceVertexCData',cindex,'FaceColor','interp');
+p = patch(Axes_3D, 'Faces',faces,'Vertices',verts,'FaceVertexCData',cindex,'FaceColor','flat');
 t = hgtransform('Parent', Axes_3D);
 set(p,'Parent',t)
 applyTransforms();
@@ -178,10 +179,13 @@ applyTransforms();
 % set(t,'Matrix',CenterTranslation);
 % drawnow;
 
-% colormap(Axes_3D, 'copper');
-% material(Axes_3D, 'shiny');
-% l = light(Axes_3D, 'Position',[-0.4 0.2 0.9],'Style','infinite')
-% lighting gouraud
+colormap(Axes_3D, 'autumn');
+% colormap(Axes_3D, 'winter');
+material(Axes_3D, 'metal');
+l1 = light(Axes_3D, 'Position',[5 0 2],'Style','infinite')
+l2 = light(Axes_3D, 'Position',[0 0 -3],'Style','infinite')
+l3 = light(Axes_3D, 'Position',[-5 0 3],'Style','infinite')
+lighting gouraud
 
 euler_hgt(1)  = hgtransform('Parent', Axes_3D, 'tag', 'OriginAxes');
 euler_hgt(2)  = hgtransform( Axes_3D, 'Parent', euler_hgt(1), 'tag', 'roll_disc');
@@ -310,7 +314,7 @@ end
 
 function [] = Draw_Guide_Lines(Axes_3D, AC_DIMENSION, euler_hgt)
 %% Plot Euler angles references
-
+global t
 %Attribution: https://medium.com/geekculture/3d-animations-made-simple-with-matlab-visualizing-flight-test-data-and-simulation-results-ed399cdcc711
 R = AC_DIMENSION;
 % Plot outer circles
