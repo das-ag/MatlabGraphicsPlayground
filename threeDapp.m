@@ -28,13 +28,6 @@ CamYInputPos = Padding + Field_Height
 CamYLabelPos = CamYInputPos - Field_Height
 XLabel = XComponent + Field_Width + 10
 
-%Creating input text field for the radius%
-% Radius = uieditfield(app,'numeric');
-% Radius.Position = [XComponent 10 Field_Width Field_Height];
-% Radius_Label = uilabel(app);
-% Radius_Label.Text = 'Radius';
-% Radius_Label.Position = [XLabel 10 Field_Width Field_Height];
-
 %Creating 3D axes%
 global Axes_3D 
 Axes_3D = uiaxes(app);
@@ -73,7 +66,6 @@ buildAnimationButton = uibutton(app);
 buildAnimationButton.Position = [HeaderX TopLeftY Field_Width Field_Height];
 buildAnimationButton.Text = '▶︎ obj build animation';
 
-
 %Camera/Perspective mode Dropdown%
 perspDd = uidropdown(app,"Items",["orthographic","perspective"]);
 perspDd.Position = [HeaderX (TopLeftY-(Spacer)) Field_Width Field_Height];
@@ -88,7 +80,7 @@ LineDd_Label = uilabel(app);
 LineDd_Label.Text = 'Line Style';
 LineDd_Label.Position = [XLabel (TopLeftY-(2*Spacer)) Field_Width Field_Height];
 
-%Rotation Transforms
+%% Transforms
 SliderSamples = 1000;
 xRotPi = 0;
 yRotPi = 0;
@@ -105,7 +97,7 @@ TransformsLable.Text = 'Transformations:';
 TransformsLable.Position = [HeaderX (TopLeftY-(4*Spacer)) Field_Width Field_Height];
 TransformsSpacerStart = TopLeftY-(4*Spacer) - Spacer
 TransformsSpacer = Spacer + Field_Height
-
+%% Rotation Transforms
 % x rotation slider
 xRotSlider = uislider(app);
 xRotSlider.Position = [XComponent (TransformsSpacerStart) Field_Width Field_Height];
@@ -140,10 +132,7 @@ zRotSlider_Label = uilabel(app);
 zRotSlider_Label.Text = 'z Axis Rotation';
 zRotSlider_Label.Position = [XLabel (TransformsSpacerStart-2*TransformsSpacer) Field_Width Field_Height];
 
-%Translation Transforms
-translationSamples = 1000;
-translationBounds = 3;
-
+%% Translation Transforms
 % x translation slider
 xTranslSlider = uislider(app);
 xTranslSlider.Position = [XComponent (TransformsSpacerStart-3*TransformsSpacer) Field_Width Field_Height];
@@ -169,6 +158,7 @@ zTranslSlider_Label = uilabel(app);
 zTranslSlider_Label.Position = [XLabel (TransformsSpacerStart-5*TransformsSpacer) Field_Width Field_Height];
 zTranslSlider_Label.Text = 'z Axis Translation';
 
+%% Scale Transforms
 % x scale slider
 xScaleSlider = uislider(app);
 xScaleSlider.Position = [XComponent (TransformsSpacerStart-6*TransformsSpacer) Field_Width Field_Height];
@@ -194,13 +184,11 @@ zScaleSlider_Label = uilabel(app);
 zScaleSlider_Label.Position = [XLabel (TransformsSpacerStart-8*TransformsSpacer) Field_Width Field_Height];
 zScaleSlider_Label.Text = 'z Axis Scale';
 
+%% Materials
 MaterialsLable = uilabel(app);
 MaterialsLable.Text = 'Materials/Color:';
 MaterialsLable.Position = [HeaderX (TransformsSpacerStart-9*TransformsSpacer-Spacer) Field_Width Field_Height];
 MaterialSpacerStart = (TransformsSpacerStart-9*TransformsSpacer-2*Spacer)
-
-
-
 % Material Dropdown
 MaterialDd = uidropdown(app,"Items",["shiny","metal","dull"]);
 MaterialDd.Position = [XComponent MaterialSpacerStart Field_Width Field_Height];
